@@ -1,89 +1,97 @@
-# campus-gate
-## Visitor Management System - Requirements Specification
+: Visitor Management System
 
-### 1. Introduction
+A comprehensive visitor management system for colleges, featuring a modern front end and robust backend.
 
-#### 1.1 Purpose
-Design and develop a Visitor Management System for a college to ensure secure, trackable, and streamlined management of visitor entry, approval, and reporting, supporting multiple user types.
+## Features
 
-#### 1.2 Scope
-The system supports the following user roles:
-- **Admin User**
-- **Normal User** (sub-categorized as Student, Teaching Staff, Non-Teaching Staff, Others)
+### User Roles
 
----
+- **Admin**
+    - View all data, generate reports, and approve/reject requests.
+- **Normal User**
+    - Sub-categories: Student, Teaching Staff, Non-Teaching Staff, Others (e.g., shopkeepers).
+    - Can view their own info, create/edit/delete visitor pass requests, view past requests, and check approval status.
 
-### 2. User Roles and Access Control
+### Authentication
 
-| Role           | Access Level                                                                 |
-|----------------|------------------------------------------------------------------------------|
-| Admin          | View all data, approve/reject requests, generate reports, send alerts         |
-| Normal User    | Create/view/edit/delete own requests, check statuses                          |
-| Security Staff | Scan QR code, verify visitor, update visit details at gate, record exit time  |
+- Login with college ID and password for all users.
 
 ---
 
-### 3. Functional Requirements
+## Normal User Dashboard
 
-#### Normal User Dashboard
-- **New Visitor Pass Request Creation**
-- **Current Active Requests**
-- **View All Requests from Past**
+1. **New Visitor Pass Request Creation**
+2. **Current Active Requests**
+3. **View All Past Requests**
 
-##### New Visitor Pass Request Creation
-- Form with validations: visitor name, relationship, mobile number, vehicle type/number, date/time of visit, purpose, guest house stay.
-- Guest House logic: approval flow.
-- Non-guest house: QR generation and SMS dispatch.
+### 1. New Visitor Pass Request Creation
 
-##### Current Active Requests
-- List of active requests with options to view, edit, or delete.
+Form fields:
+- Name of visitor (text, required)
+- Relationship (dropdown: father, mother, sibling, family member; required)
+- Mobile Number (numeric, required)
+- Type of Vehicle (dropdown: None, Not Known, Two Wheeler, Three Wheeler, Car, Jeep, Van; required)
+- Vehicle Number (text, optional)
+- Number of additional visitors (dropdown: 0–10; required)
+- Date of visit (calendar, today or next 10 days; required)
+- Tentative time of visit (dropdown, hour:minute; if today, only times after current hour; required)
+- Purpose of visit (text, required)
+- Stay planned in Guest House (dropdown: yes/no; required)
 
-##### View All Requests from Past
-- Read-only history of past requests with statuses.
+**If 'yes' for Guest House:**
+- Attach Guest House stay approval email
+- 'Send for approval' button (saves request, notifies admin, shows confirmation popup)
 
-#### Admin Dashboard
-- **Pending Approvals**
-- **All Active Requests**
-- **Report Generation**
-- **Alert Notification**
-
-##### Pending Approvals
-- View, approve/reject guest house stay requests with comments and notifications.
-
-##### All Active Requests
-- List and view all open requests.
-
-##### Report Generation
-- Filter and export based on various criteria.
-
-##### Alert Notification
-- Campus-wide or targeted alerts via SMS/email.
+**If 'no' for Guest House:**
+- 'Submit' button (saves request, displays QR code, sends to visitor's mobile)
 
 ---
 
-### 4. Special Functionalities
+### 2. Current Active Requests
 
-- **QR Code Handling:** Generated upon submission/approval, sent to visitor, valid for same day or guest house stay duration.
-- **Gate Verification:** QR scan displays visitor data, allows edits, photo upload, and verification.
-- **Exit Gate:** QR used for exit, exit time recorded, status updated.
-- **Auto Cleanup:** Open requests older than 7 days are auto-deleted and deactivated.
-
----
-
-### 5. Non-Functional Requirements
-
-- **Authentication:** Integrated with college ID
-- **Security:** SSL, role-based access, QR validation
-- **Availability:** 24/7 with backup
-- **Performance:** Supports 500 concurrent users
-- **Scalability:** Easy feature/role addition
-- **Cost Optimization:** Open-source tech stack
+- List of open requests (latest first)
+- Fields: Date, Time, Visitor Type, Name
+- Actions: View Details (read-only, includes QR), Edit (update fields, save changes), Delete (confirmation popup)
 
 ---
 
-### 6. Future Enhancements
+### 3. View All Past Requests
 
-- ANPR Integration (Number Plate Recognition)
-- Biometric or facial recognition
-- Email notification support
-- Visitor feedback collection
+- List of all requests (latest first)
+- Fields: Date, Time, Name, Status (Open/Closed)
+- Action: View Details (read-only)
+
+---
+
+## Admin Dashboard
+
+1. **Pending Approvals**
+2. **All Active Requests**
+3. **Report Generation**
+4. **Alert Notification**
+
+### 1. Pending Approvals
+
+- List of pending requests (oldest first)
+- View Details (includes Guest House email)
+- Actions: Approve (sends QR to visitor, notifies user), Reject (closes request, sends SMS to user), Comments box
+
+---
+
+### 2. All Active Requests
+
+- List of all active requests (ascending by visit date/time)
+- View Details
+
+---
+
+## Security Workflow
+
+- Security scans QR code to view visitor details.
+- Can update vehicle info, attach vehicle photo, and verify entry.
+- Open requests older than 7 days auto-deleted; QR becomes invalid.
+- QR code valid for same day only (unless Guest House booking).
+- Tracks entry/exit counts per QR.
+- Guest House QR valid until booking closure.
+- Exit updates record with exit date/time.
+- Non-Guest House QR codes expire next day; status set to Closed.
