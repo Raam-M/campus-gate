@@ -1,10 +1,10 @@
-# Campus Gate Visitor Management System
+# Vis-IITH
 
 A comprehensive digital visitor management system designed for educational institutions to streamline visitor registration, approval workflows, and security operations. Built with modern web technologies including Next.js 15.3.5, TypeScript, Tailwind CSS, and Prisma ORM.
 
 ## Project Overview
 
-The Campus Gate Visitor Management System provides a robust platform for managing visitor access to college premises through an integrated workflow involving students, staff, administrators, and security personnel. The system incorporates QR code generation, SMS notifications and guest house approval workflows.
+Vis-IITH provides a robust platform for managing visitor access to college premises through an integrated workflow involving students, staff, administrators, and security personnel. The system incorporates QR code generation, SMS notifications and guest house approval workflows.
 
 ## System Architecture
 
@@ -126,8 +126,8 @@ Users can create visitor requests with the following mandatory fields:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Raam-M/campus-gate.git
-cd campus-gate
+git clone https://github.com/Raam-M/vis-iith.git
+cd vis-iith
 ```
 
 2. Install dependencies:

@@ -1,12 +1,12 @@
-# Campus Gate Visitor Management System – Step-by-Step Development Plan
+# Vis-IITH – Step-by-Step Development Plan
 
 ## 1. Project Initialization
 
 ### 1.1. Create Next.js App (with TypeScript)
 - **Command:**
   ```bash
-  npx create-next-app@15.3.5 campus-gate --typescript --use-npm
-  cd campus-gate
+  npx create-next-app@15.3.5 vis-iith --typescript --use-npm
+  cd vis-iith
   ```
   *(Check for latest version at https://www.npmjs.com/package/next)*
 
