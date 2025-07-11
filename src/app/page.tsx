@@ -70,6 +70,25 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* Security/QR Verification Section */}
+          <div className="mt-16 text-center">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Security Portal</h3>
+              <p className="text-gray-600 mb-6">
+                Security staff can verify visitor QR codes and manage check-in/out here.
+              </p>
+              <Link
+                href="/verify-qr"
+                className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m-6-4h2m0 0V8m0 4v4m0-4h2m0 0V8m0 4v4" />
+                </svg>
+                QR Code Verification
+              </Link>
+            </div>
+          </div>
+
           {/* Features Section */}
           <div className="mt-20 text-center">
             <h3 className="text-2xl font-bold text-gray-900 mb-8">Key Features</h3>

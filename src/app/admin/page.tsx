@@ -2,17 +2,38 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function AdminLogin() {
   const [formData, setFormData] = useState({
     userIdEmail: '',
     password: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log('Admin login:', formData);
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const result = await login(formData.userIdEmail, formData.password, 'admin');
+      
+      if (result.success) {
+        router.push('/admin/dashboard');
+      } else {
+        setError(result.error || 'Login failed');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +79,17 @@ export default function AdminLogin() {
             </div>
 
             <div className="px-8 py-8">
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex">
+                    <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-sm text-red-600 font-medium">{error}</p>
+                  </div>
+                </div>
+              )}
+
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="userIdEmail" className="block text-sm font-semibold text-gray-800 mb-3">
@@ -112,9 +144,20 @@ export default function AdminLogin() {
 
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 transform hover:scale-105"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  Sign In
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </button>
               </form>
 
@@ -161,6 +204,9 @@ export default function AdminLogin() {
           {/* Contact Section */}
           <div className="text-center">
             <p className="text-sm text-gray-700 font-medium">
+              Test Credentials: <strong>admin@iith.ac.in</strong> / <strong>admin123</strong>
+            </p>
+            <p className="text-xs text-gray-600 mt-2">
               For access issues, contact the system administrator at{' '}
               <a href="mailto:admin@iith.ac.in" className="text-emerald-600 hover:text-emerald-500 font-semibold">
                 admin@iith.ac.in

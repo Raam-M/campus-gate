@@ -2,13 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function NewRequest() {
-  const [user] = useState({
-    name: 'John Doe',
-    id: 'CS21B1001',
-    email: 'john.doe@iith.ac.in'
-  });
+  const { user, logout } = useAuth();
+
+  // If user is not authenticated, show loading or redirect
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const [formData, setFormData] = useState({
     visitorName: '',
@@ -104,17 +113,71 @@ export default function NewRequest() {
     
     setIsSubmitting(true);
     
-    // TODO: Implement actual form submission logic
-    console.log('New request:', formData);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    
-    // TODO: Show success message and redirect
-    alert('Request submitted successfully! You will receive an email confirmation shortly.');
-    window.location.href = '/student/dashboard';
+    try {
+      // Prepare the data for API submission
+      const requestData = {
+        visitorName: formData.visitorName,
+        visitorEmail: formData.visitorEmail,
+        visitorPhone: formData.visitorPhone,
+        relationship: formData.relationship,
+        customRelationship: formData.customRelationship,
+        purposeOfVisit: formData.purposeOfVisit,
+        visitDate: formData.visitDate,
+        visitTime: formData.visitTime,
+        numberOfVisitors: formData.numberOfVisitors,
+        stayingInGuestHouse: formData.stayingInGuestHouse,
+        additionalNotes: formData.additionalNotes
+      };
+
+      const response = await fetch('/api/visitor-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(requestData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit request');
+      }
+
+      // Success
+      alert('Request submitted successfully! Your request is now pending admin approval. You will receive an email confirmation shortly.');
+      
+      // Reset form
+      setFormData({
+        visitorName: '',
+        visitorEmail: '',
+        visitorPhone: '',
+        relationship: '',
+        customRelationship: '',
+        purposeOfVisit: '',
+        visitDate: '',
+        visitTime: '',
+        numberOfVisitors: '1',
+        stayingInGuestHouse: '',
+        guestHouseProof: null,
+        additionalNotes: ''
+      });
+      
+      // Reset file input
+      const fileInput = document.getElementById('guestHouseProof') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+
+      // Redirect to dashboard
+      window.location.href = '/student/dashboard';
+      
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      alert(error instanceof Error ? error.message : 'Failed to submit request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -142,6 +205,11 @@ export default function NewRequest() {
               </div>
               <Link 
                 href="/" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  logout();
+                  window.location.href = '/';
+                }}
                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
               >
                 Sign Out

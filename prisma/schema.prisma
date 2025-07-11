@@ -35,7 +35,7 @@ model VisitorRequest {
   purpose      String
   guestHouse   Boolean
   guestHouseApprovalEmail String?
-  status       String   // "pending", "approved", "rejected", "closed"
+  status       String   // "YET_TO_VERIFY", "pending", "approved", "rejected", "closed"
   qrCode       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
